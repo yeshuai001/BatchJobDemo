@@ -1,0 +1,85 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:batch="http://www.springframework.org/schema/batch"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/batch
+							http://www.springframework.org/schema/batch/spring-batch.xsd
+							http://www.springframework.org/schema/beans
+							http://www.springframework.org/schema/beans/spring-beans.xsd"
+		default-autowire="byName" default-init-method="init">
+
+	<bean id="resourcelessTransactionManager" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
+	<bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+	<!-- job注册容器 -->
+	<bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="databaseType" value="mysql" />
+		<property name="transactionManager" ref="resourcelessTransactionManager" />
+	</bean>
+
+	<!-- job启动器 -->
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+        <property name="jobRepository" ref="jobRepository" />
+    </bean>
+
+	<bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- job注册 -->
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor">
+        <property name="jobRegistry" ref="jobRegistry"/>
+    </bean>
+
+	<!-- 执行任务线程池 -->
+	<bean id="taskExecutor"	class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="10" />
+		<property name="maxPoolSize" value="50" />
+	</bean>
+
+	<!-- 读数据 -->
+	<bean id="itemReader" class="org.mybatis.spring.batch.MyBatisPagingItemReader" scope="step">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+		<property name="queryId" value="com.hsjry.cc.batch.spring.dao.mapper.PublicCcSmsSignMapper.selectByExample" />
+		<property name="pageSize" value="100"/>
+		<property name="parameterValues">
+        <map>
+            <entry key="jobDate" value="#{jobParameters['jobDate']}"/>
+        </map>
+    	</property>
+	</bean>
+
+	<!-- 写数据 -->
+	<bean id="itemWriter" class="org.mybatis.spring.batch.MyBatisBatchItemWriter" scope="step">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+		<property name="statementId" value="com.hsjry.cc.batch.spring.dao.mapper.PublicCcSmsSignMapper.updateByExampleSelective" />
+	</bean>
+
+    <!-- 任务 -->
+    <batch:job id="taskJob" restartable="true" job-repository="jobRepository">
+		<!-- 第1步 -->
+		<batch:step id="step" next="step2">
+			<batch:tasklet ref="tasklet1" transaction-manager="resourcelessTransactionManager"/>
+		</batch:step>
+		<!-- 第2步 -->
+		<batch:step id="step2" next="step3">
+			<batch:tasklet transaction-manager="resourcelessTransactionManager" task-executor="taskExecutor" throttle-limit="50">
+				<batch:chunk reader="itemReader" processor="myItemProcessor" writer="itemWriter" commit-interval="2000"/>
+			</batch:tasklet>
+			<batch:listeners>
+				<batch:listener ref="myStepExecutionListener"/>
+			</batch:listeners>
+		</batch:step>
+		<!-- 第3步 -->
+		<batch:step id="step3" >
+			<batch:tasklet ref="tasklet3" transaction-manager="resourcelessTransactionManager"/>
+			<batch:next on="COMPLETED" to="step4" />
+			<batch:next on="FAILED" to="step4" />
+		</batch:step>
+		<!-- 第4步 -->
+		<batch:step id="step4">
+			<batch:tasklet ref="tasklet4"  transaction-manager="resourcelessTransactionManager"/>
+		</batch:step>
+    </batch:job>
+
+</beans>

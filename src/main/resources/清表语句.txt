@@ -1,0 +1,21 @@
+-------------------------------- 【ElasticJob Tables】 --------------------------------
+delete from loanptest.job_execution_log;
+delete from loanptest.job_status_trace_log;
+-------------------------------- 【ElasticJob Tables】 --------------------------------
+
+-------------------------------- 【Spring Batch Tables】 --------------------------------
+set foreign_key_checks = 0;
+delete from loanptest.batch_step_execution_context;
+delete from loanptest.batch_job_execution_context;
+delete from loanptest.batch_step_execution;
+delete from loanptest.batch_job_execution_params;
+delete from loanptest.batch_job_execution;
+delete from loanptest.batch_job_instance;
+delete from loanptest.batch_step_execution_seq;
+delete from loanptest.batch_job_execution_seq;
+delete from loanptest.batch_job_seq;
+insert into loanptest.batch_step_execution_seq (id, unique_key) select * from (select 0 as id, '0' as unique_key) as tmp where not exists(select * from batch_step_execution_seq);
+insert into loanptest.batch_job_execution_seq (id, unique_key) select * from (select 0 as id, '0' as unique_key) as tmp where not exists(select * from batch_job_execution_seq);
+insert into loanptest.batch_job_seq (id, unique_key) select * from (select 0 as id, '0' as unique_key) as tmp where not exists(select * from batch_job_seq);
+set foreign_key_checks = 1;
+-------------------------------- 【Spring Batch Tables】 --------------------------------
