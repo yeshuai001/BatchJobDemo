@@ -43,9 +43,9 @@
 		<property name="queryId" value="com.hsjry.cc.batch.spring.dao.mapper.PublicCcSmsSignMapper.selectByExample" />
 		<property name="pageSize" value="100"/>
 		<property name="parameterValues">
-        <map>
-            <entry key="jobDate" value="#{jobParameters['jobDate']}"/>
-        </map>
+			<map>
+				<entry key="jobDate" value="#{jobParameters['jobDate']}"/>
+			</map>
     	</property>
 	</bean>
 

@@ -14,6 +14,7 @@
     <reg:zookeeper id="regCenter" server-lists="10.53.156.239:2181" namespace="elastic-job-demo" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
 
     <!-- 配置作业-->
-    <job:simple id="myElasticJob" class="com.hsjry.cc.batch.spring.job.MyElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="1" sharding-item-parameters="0=A"/>
+    <job:simple id="myElasticJob" class="com.hsjry.cc.batch.spring.job.MyElasticJob" registry-center-ref="regCenter" cron="0/15 * * * * ?"
+                sharding-total-count="1" event-trace-rdb-data-source="dataSource"/>
 </beans>
 

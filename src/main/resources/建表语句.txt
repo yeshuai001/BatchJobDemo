@@ -1,8 +1,8 @@
 -------------------------------- 【ElasticJob Tables】 --------------------------------
-drop table if exists loanptest.job_execution_log ;
-drop table if exists loanptest.job_status_trace_log ;
+drop table if exists loantt.job_execution_log ;
+drop table if exists loantt.job_status_trace_log ;
 
-create table loanptest.job_execution_log (
+create table loantt.job_execution_log (
   id varchar(40) not null comment '主键',
   job_name varchar(100) not null comment '作业名称',
   task_id varchar(1000) not null comment '任务名称,每次作业运行生成新任务',
@@ -18,7 +18,7 @@ create table loanptest.job_execution_log (
 ) engine=innodb default charset=utf8;
 
 
-create table loanptest.job_status_trace_log (
+create table loantt.job_status_trace_log (
   id varchar(40) not null comment '主键',
   job_name varchar(100) not null comment '作业名称',
   original_task_id varchar(1000) not null comment '原任务名称',
@@ -32,25 +32,23 @@ create table loanptest.job_status_trace_log (
   creation_time timestamp not null comment '创建时间',
   primary key (id)
 ) engine=innodb default charset=utf8;
-
-create index task_id_state_index on loanptest.job_status_trace_log(task_id, state);
 -------------------------------- 【ElasticJob Tables】 --------------------------------
 
 
 -------------------------------- 【Spring Batch Tables】 --------------------------------
 set foreign_key_checks = 0;
 
-drop table if exists loanptest.batch_step_execution_context ;
-drop table if exists loanptest.batch_job_execution_context ;
-drop table if exists loanptest.batch_step_execution ;
-drop table if exists loanptest.batch_job_execution_params ;
-drop table if exists loanptest.batch_job_execution ;
-drop table if exists loanptest.batch_job_instance ;
-drop table if exists loanptest.batch_step_execution_seq ;
-drop table if exists loanptest.batch_job_execution_seq ;
-drop table if exists loanptest.batch_job_seq ;
+drop table if exists loantt.batch_step_execution_context ;
+drop table if exists loantt.batch_job_execution_context ;
+drop table if exists loantt.batch_step_execution ;
+drop table if exists loantt.batch_job_execution_params ;
+drop table if exists loantt.batch_job_execution ;
+drop table if exists loantt.batch_job_instance ;
+drop table if exists loantt.batch_step_execution_seq ;
+drop table if exists loantt.batch_job_execution_seq ;
+drop table if exists loantt.batch_job_seq ;
 
-create table loanptest.batch_job_instance  (
+create table loantt.batch_job_instance  (
 	job_instance_id bigint  not null primary key ,
 	version bigint ,
 	job_name varchar(100) not null,
@@ -58,7 +56,7 @@ create table loanptest.batch_job_instance  (
 	constraint job_inst_un unique (job_name, job_key)
 )  engine=innodb default charset=utf8;
 
-create table loanptest.batch_job_execution  (
+create table loantt.batch_job_execution  (
 	job_execution_id bigint  not null primary key ,
 	version bigint  ,
 	job_instance_id bigint not null,
@@ -74,7 +72,7 @@ create table loanptest.batch_job_execution  (
 	references batch_job_instance(job_instance_id)
 )  engine=innodb default charset=utf8;
 
-create table loanptest.batch_job_execution_params  (
+create table loantt.batch_job_execution_params  (
 	job_execution_id bigint not null ,
 	type_cd varchar(6) not null ,
 	key_name varchar(100) not null ,
@@ -87,7 +85,7 @@ create table loanptest.batch_job_execution_params  (
 	references batch_job_execution(job_execution_id)
 )  engine=innodb default charset=utf8;
 
-create table loanptest.batch_step_execution  (
+create table loantt.batch_step_execution  (
 	step_execution_id bigint  not null primary key ,
 	version bigint not null,
 	step_name varchar(100) not null,
@@ -110,7 +108,7 @@ create table loanptest.batch_step_execution  (
 	references batch_job_execution(job_execution_id)
 )  engine=innodb default charset=utf8;
 
-create table loanptest.batch_step_execution_context  (
+create table loantt.batch_step_execution_context  (
 	step_execution_id bigint not null primary key,
 	short_context varchar(2500) not null,
 	serialized_context text ,
@@ -118,7 +116,7 @@ create table loanptest.batch_step_execution_context  (
 	references batch_step_execution(step_execution_id)
 )  engine=innodb default charset=utf8;
 
-create table loanptest.batch_job_execution_context  (
+create table loantt.batch_job_execution_context  (
 	job_execution_id bigint not null primary key,
 	short_context varchar(2500) not null,
 	serialized_context text ,
@@ -126,29 +124,29 @@ create table loanptest.batch_job_execution_context  (
 	references batch_job_execution(job_execution_id)
 )  engine=innodb default charset=utf8;
 
-create table loanptest.batch_step_execution_seq (
+create table loantt.batch_step_execution_seq (
 	id bigint not null,
 	unique_key char(1) not null,
 	constraint unique_key_un unique (unique_key)
 )  engine=innodb default charset=utf8;
 
-insert into loanptest.batch_step_execution_seq (id, unique_key) select * from (select 0 as id, '0' as unique_key) as tmp where not exists(select * from batch_step_execution_seq);
+insert into loantt.batch_step_execution_seq (id, unique_key) select * from (select 0 as id, '0' as unique_key) as tmp where not exists(select * from batch_step_execution_seq);
 
-create table loanptest.batch_job_execution_seq (
+create table loantt.batch_job_execution_seq (
 	id bigint not null,
 	unique_key char(1) not null,
 	constraint unique_key_un unique (unique_key)
 )  engine=innodb default charset=utf8;
 
-insert into loanptest.batch_job_execution_seq (id, unique_key) select * from (select 0 as id, '0' as unique_key) as tmp where not exists(select * from batch_job_execution_seq);
+insert into loantt.batch_job_execution_seq (id, unique_key) select * from (select 0 as id, '0' as unique_key) as tmp where not exists(select * from batch_job_execution_seq);
 
-create table loanptest.batch_job_seq (
+create table loantt.batch_job_seq (
 	id bigint not null,
 	unique_key char(1) not null,
 	constraint unique_key_un unique (unique_key)
 )  engine=innodb default charset=utf8;
 
-insert into loanptest.batch_job_seq (id, unique_key) select * from (select 0 as id, '0' as unique_key) as tmp where not exists(select * from batch_job_seq);
+insert into loantt.batch_job_seq (id, unique_key) select * from (select 0 as id, '0' as unique_key) as tmp where not exists(select * from batch_job_seq);
 
 set foreign_key_checks = 1;
 -------------------------------- 【Spring Batch Tables】 --------------------------------
