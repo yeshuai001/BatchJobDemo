@@ -36,6 +36,7 @@ public class MyElasticJob implements SimpleJob {
         String dateText = df.format(new Date());
         JobParametersBuilder builder = new JobParametersBuilder();
         builder.addString("uuid", UUID.randomUUID().toString().replace("-","").toUpperCase());
+        builder.addString("elasticJobClass","com.hsjry.cc.batch.spring.job.MyElasticJob");
 
         try {
             jobLauncher.run(job, builder.toJobParameters());
