@@ -6,4 +6,19 @@
     <import resource="spring/spring-datasource.xml" />
     <import resource="spring/spring-elasticjob.xml" />
     <import resource="spring/spring-batch.xml" />
+
+    <bean id="dummy" class="java.util.Date"/>
+
+    <import resource="classpath*:/META-INF/spring/batch/bootstrap/**/*.xml" />
+    <import resource="classpath*:/META-INF/spring/batch/override/**/*.xml" />
+
+    <bean id="parameterUnpackerFilter" class="org.springframework.batch.admin.web.filter.ParameterUnpackerFilter">
+        <property name="prefix" value="unpack_"/>
+        <property name="putEmptyParamsInPath" value="true"/>
+    </bean>
+
+    <import resource="classpath*:/META-INF/spring/batch/servlet/resources/*.xml" />
+    <import resource="classpath*:/META-INF/spring/batch/servlet/manager/*.xml" />
+    <import resource="classpath*:/META-INF/spring/batch/servlet/override/*.xml" />
+
 </beans>

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 /**
  * 步骤数据处理器
  */
@@ -22,7 +24,11 @@ public class MyItemProcessor implements ItemProcessor<PublicCcSmsSign, PublicCcS
 
 	public PublicCcSmsSign process(PublicCcSmsSign item) throws Exception {
 		item.setUpdateBy("admin");
+		item.setUpdateTime(new Date());
 		log.info("执行【第2步】 : " + item.getSignContent());
+		if(1 == 1) {
+			throw new NullPointerException();
+		}
 		return item;
 	}
 
