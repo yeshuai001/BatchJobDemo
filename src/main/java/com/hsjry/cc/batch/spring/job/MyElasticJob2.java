@@ -1,7 +1,7 @@
 package com.hsjry.cc.batch.spring.job;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.simple.SimpleJob;
+import com.wandaph.tt.api.ShardingContext;
+import com.wandaph.tt.api.simple.SimpleJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
