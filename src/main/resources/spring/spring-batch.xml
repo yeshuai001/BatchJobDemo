@@ -92,4 +92,9 @@
 		</batch:step>
     </batch:job>
 
+	<bean class="com.dangdang.ddframe.job.executor.handler.impl.BatchServiceHandler">
+		<property name="jobRegistry" ref="jobRegistry" />
+		<property name="jobLauncher" ref="jobLauncher" />
+		<property name="jobRepository" ref="jobRepository" />
+	</bean>
 </beans>

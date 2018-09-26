@@ -16,7 +16,7 @@ public class Tasklet3 implements Tasklet {
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		log.info("执行【第3步】");
-		Thread.sleep(15000);
+		Thread.sleep(5000);
 		return RepeatStatus.FINISHED;
 	}
 
