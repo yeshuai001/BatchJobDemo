@@ -5,6 +5,7 @@ import com.wandaph.tt.api.simple.SimpleJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -30,15 +31,21 @@ public class MyElasticJob implements SimpleJob {
 
     @Override
     public void execute(ShardingContext context) {
-        log.info("------------- 任务【MyElasticJob】开始 -------------");
+        log.info("------------- 任务【MyElasticJob】开始执行 -------------");
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String dateText = df.format(new Date());
         JobParametersBuilder builder = new JobParametersBuilder();
         builder.addString("uuid", UUID.randomUUID().toString().replace("-","").toUpperCase());
         builder.addString("elasticJobClass","com.hsjry.cc.batch.spring.job.MyElasticJob");
 
         try {
-            jobLauncher.run(job, builder.toJobParameters());
+            JobExecution jobExecution = jobLauncher.run(job, builder.toJobParameters());
+            while (jobExecution.isRunning()) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         } catch (JobExecutionAlreadyRunningException e) {
             log.info("任务执行失败 : " + e.getMessage());
             throw new RuntimeException(e);
@@ -52,5 +59,6 @@ public class MyElasticJob implements SimpleJob {
             log.info("任务执行失败 : " + e.getMessage());
             throw new RuntimeException(e);
         }
+        log.info("------------- 任务【MyElasticJob】执行结束 -------------");
     }
 }

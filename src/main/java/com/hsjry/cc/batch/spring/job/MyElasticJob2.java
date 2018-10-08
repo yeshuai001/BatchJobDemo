@@ -11,7 +11,7 @@ public class MyElasticJob2 implements SimpleJob {
 
     @Override
     public void execute(ShardingContext shardingContext) {
-        log.info("------------- 任务【MyElasticJob2】开始 -------------");
-        log.info("------------- 任务【MyElasticJob2】结束 -------------");
+        log.info("------------- 任务【MyElasticJob2】开始执行 -------------");
+        log.info("------------- 任务【MyElasticJob2】执行结束 -------------");
     }
 }
