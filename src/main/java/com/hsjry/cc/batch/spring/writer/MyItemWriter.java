@@ -15,19 +15,13 @@ public class MyItemWriter implements ItemStreamWriter<PublicCcSmsSign>{
 
 
     @Override
-    public void open(ExecutionContext executionContext) throws ItemStreamException {
-        log.info("MyItemWriter : open");
-    }
+    public void open(ExecutionContext executionContext) throws ItemStreamException {}
 
     @Override
-    public void update(ExecutionContext executionContext) throws ItemStreamException {
-        log.info("MyItemWriter : update");
-    }
+    public void update(ExecutionContext executionContext) throws ItemStreamException {}
 
     @Override
-    public void close() throws ItemStreamException {
-        log.info("MyItemWriter : close");
-    }
+    public void close() throws ItemStreamException {}
 
     @Override
     public void write(List<? extends PublicCcSmsSign> list) throws Exception {

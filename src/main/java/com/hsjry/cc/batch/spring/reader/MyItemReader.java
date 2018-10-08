@@ -15,7 +15,7 @@ public class MyItemReader implements ItemStreamReader{
     private static int flag = 1;
 
     @Override
-    public Object read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+    public Object read() throws Exception {
         PublicCcSmsSign smsSign = new PublicCcSmsSign();
         smsSign.setJobDate(new Date().toString());
         smsSign.setSignId(2);
@@ -31,18 +31,12 @@ public class MyItemReader implements ItemStreamReader{
     }
 
     @Override
-    public void open(ExecutionContext executionContext) throws ItemStreamException {
-        log.info("MyItemReader : open");
-    }
+    public void open(ExecutionContext executionContext) throws ItemStreamException {}
 
     @Override
-    public void update(ExecutionContext executionContext) throws ItemStreamException {
-        log.info("MyItemReader : update");
-    }
+    public void update(ExecutionContext executionContext) throws ItemStreamException {}
 
     @Override
-    public void close() throws ItemStreamException {
-        log.info("MyItemReader : close");
-    }
+    public void close() throws ItemStreamException {}
 
 }
