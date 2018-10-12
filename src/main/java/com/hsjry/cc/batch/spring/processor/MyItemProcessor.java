@@ -26,9 +26,9 @@ public class MyItemProcessor implements ItemProcessor<PublicCcSmsSign, PublicCcS
 		item.setUpdateBy("admin");
 		item.setUpdateTime(new Date());
 		log.info("执行【第2步】 : " + item.getSignContent());
-//		if(1 == 1) {
-//			throw new NullPointerException();
-//		}
+		if(1 == 1) {
+			throw new NullPointerException();
+		}
 		return item;
 	}
 

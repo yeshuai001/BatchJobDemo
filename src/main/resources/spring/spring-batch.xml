@@ -70,7 +70,7 @@
 				<!-- 第2步 -->
 				<batch:step id="step2">
 					<batch:tasklet transaction-manager="resourcelessTransactionManager">
-						<batch:chunk reader="itemReader" processor="myItemProcessor" writer="itemWriter" commit-interval="2000" retry-limit="3" skip-limit="3">
+						<batch:chunk reader="itemReader" processor="myItemProcessor" writer="itemWriter" commit-interval="20" retry-limit="3" skip-limit="3">
 							<batch:retryable-exception-classes>
 								<batch:include class="java.lang.NullPointerException"/>
 							</batch:retryable-exception-classes>
