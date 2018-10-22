@@ -15,7 +15,7 @@
 
     <!-- 配置作业-->
     <job:simple id="myElasticJob" class="com.hsjry.cc.batch.spring.job.MyElasticJob" registry-center-ref="regCenter" cron="0/30 * * * * ?"
-                sharding-total-count="1" event-trace-rdb-data-source="dataSource"/>
+                sharding-total-count="1" event-trace-rdb-data-source="dataSource" batch-job-ref="taskJob" jobLauncher-ref="jobLauncher"/>
 
     <!-- 配置作业-->
     <job:simple id="myElasticJob2" class="com.hsjry.cc.batch.spring.job.MyElasticJob2" registry-center-ref="regCenter" cron="0/30 * * * * ?"

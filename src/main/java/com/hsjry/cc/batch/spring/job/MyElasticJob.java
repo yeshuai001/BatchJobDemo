@@ -2,6 +2,7 @@ package com.hsjry.cc.batch.spring.job;
 
 import com.wandaph.tt.api.ShardingContext;
 import com.wandaph.tt.api.simple.SimpleJob;
+import com.wandaph.tt.spring.job.AbstractSimpleBatchJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -19,23 +20,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-public class MyElasticJob implements SimpleJob {
+public class MyElasticJob extends AbstractSimpleBatchJob {
 
     private final static Logger log = LoggerFactory.getLogger(MyElasticJob.class);
 
-    @Autowired
-    @Qualifier("taskJob")
-    private Job job;
-    @Autowired
-    private JobLauncher jobLauncher;
-
     @Override
-    public void execute(ShardingContext context) {
+    public void doExecute(Job job, JobLauncher jobLauncher, JobParametersBuilder builder, ShardingContext context) {
         log.info("------------- 任务【MyElasticJob】开始执行 -------------");
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        JobParametersBuilder builder = new JobParametersBuilder();
         builder.addString("uuid", UUID.randomUUID().toString().replace("-","").toUpperCase());
-        builder.addString("elasticJobClass","com.hsjry.cc.batch.spring.job.MyElasticJob");
 
         try {
             JobExecution jobExecution = jobLauncher.run(job, builder.toJobParameters());

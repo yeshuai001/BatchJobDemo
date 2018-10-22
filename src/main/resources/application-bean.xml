@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <import resource="spring/spring-datasource.xml" />
-    <import resource="spring/spring-elasticjob.xml" />
     <import resource="spring/spring-batch.xml" />
+    <import resource="spring/spring-elasticjob.xml" />
 
 </beans>
