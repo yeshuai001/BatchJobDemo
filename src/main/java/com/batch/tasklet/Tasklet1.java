@@ -18,5 +18,4 @@ public class Tasklet1 implements Tasklet {
 		log.info("执行【第1步】");
 		return RepeatStatus.FINISHED;
 	}
-
 }

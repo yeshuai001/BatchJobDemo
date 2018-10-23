@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
- * 步骤数据处理器
+ * 步骤数据处理类
  */
 @Component
 @Scope("step")
@@ -27,5 +27,4 @@ public class MyItemProcessor implements ItemProcessor<MyModel, MyModel> {
 		}
 		return item;
 	}
-
 }

@@ -15,7 +15,7 @@ import javax.annotation.PreDestroy;
 public class MyStepExecutionListener implements StepExecutionListener {
 
 	private final static Logger log = LoggerFactory.getLogger(MyStepExecutionListener.class);
-	private static final ThreadLocal<Long> timeHandler = new ThreadLocal<Long>();
+	private static final ThreadLocal<Long> timeHandler = new ThreadLocal<>();
 	
 	@PreDestroy
 	public void destroy() {
@@ -34,5 +34,4 @@ public class MyStepExecutionListener implements StepExecutionListener {
 		timeHandler.set(null);
 		return ExitStatus.COMPLETED;
 	}
-
 }

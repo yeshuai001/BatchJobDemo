@@ -20,17 +20,12 @@ public class MyJob extends AbstractSimpleBatchJob {
 
     @Override
     public void doExecute(Job job, JobLauncher jobLauncher, JobParametersBuilder builder, ShardingContext context) {
-        log.info("------------- 任务开始执行 -------------");
+        log.info("------------- 作业开始执行 -------------");
         builder.addString("uuid", UUID.randomUUID().toString().replace("-","").toUpperCase());
-
         try {
             JobExecution jobExecution = jobLauncher.run(job, builder.toJobParameters());
             while (jobExecution.isRunning()) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Thread.sleep(500);
             }
         } catch (JobExecutionAlreadyRunningException e) {
             log.info("任务执行失败 : " + e.getMessage());
@@ -44,7 +39,9 @@ public class MyJob extends AbstractSimpleBatchJob {
         } catch (JobParametersInvalidException e) {
             log.info("任务执行失败 : " + e.getMessage());
             throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        log.info("------------- 任务执行结束 -------------");
+        log.info("------------- 作业执行结束 -------------");
     }
 }
