@@ -1,7 +1,6 @@
-package com.hsjry.cc.batch.spring.job;
+package com.batch.job;
 
 import com.wandaph.tt.api.ShardingContext;
-import com.wandaph.tt.api.simple.SimpleJob;
 import com.wandaph.tt.spring.job.AbstractSimpleBatchJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,21 +12,15 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.UUID;
 
-public class MyElasticJob extends AbstractSimpleBatchJob {
+public class MyJob extends AbstractSimpleBatchJob {
 
-    private final static Logger log = LoggerFactory.getLogger(MyElasticJob.class);
+    private final static Logger log = LoggerFactory.getLogger(MyJob.class);
 
     @Override
     public void doExecute(Job job, JobLauncher jobLauncher, JobParametersBuilder builder, ShardingContext context) {
-        log.info("------------- 任务【MyElasticJob】开始执行 -------------");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        log.info("------------- 任务开始执行 -------------");
         builder.addString("uuid", UUID.randomUUID().toString().replace("-","").toUpperCase());
 
         try {
@@ -52,6 +45,6 @@ public class MyElasticJob extends AbstractSimpleBatchJob {
             log.info("任务执行失败 : " + e.getMessage());
             throw new RuntimeException(e);
         }
-        log.info("------------- 任务【MyElasticJob】执行结束 -------------");
+        log.info("------------- 任务执行结束 -------------");
     }
 }

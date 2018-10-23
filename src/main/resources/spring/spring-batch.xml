@@ -7,10 +7,13 @@
 							http://www.springframework.org/schema/beans/spring-beans.xsd"
 		default-autowire="byName" default-init-method="init">
 
+	<!-- 事务管理 -->
 	<bean id="resourcelessTransactionManager" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
+
+	<!-- job注册器 -->
 	<bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
 
-	<!-- job注册容器 -->
+	<!-- job资源库 -->
 	<bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="databaseType" value="mysql" />
@@ -31,7 +34,7 @@
         <property name="jobRegistry" ref="jobRegistry"/>
     </bean>
 
-	<!-- 执行任务线程池 -->
+	<!-- 线程池 -->
 	<bean id="taskExecutor"	class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
 		<property name="corePoolSize" value="10" />
 		<property name="maxPoolSize" value="50" />
@@ -40,67 +43,49 @@
 	<!-- 读数据 -->
 	<bean id="itemReader" class="org.mybatis.spring.batch.MyBatisPagingItemReader" scope="step">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-		<property name="queryId" value="com.hsjry.cc.batch.spring.dao.mapper.PublicCcSmsSignMapper.selectByExample" />
-		<property name="pageSize" value="100"/>
+		<property name="queryId" value="com.batch.dao.mapper.MyMapper.selectByExample" />
+		<property name="pageSize" value="20"/>
 	</bean>
 
 	<!-- 写数据 -->
 	<bean id="itemWriter" class="org.mybatis.spring.batch.MyBatisBatchItemWriter" scope="step">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-		<property name="statementId" value="com.hsjry.cc.batch.spring.dao.mapper.PublicCcSmsSignMapper.updateByExampleSelective" />
+		<property name="statementId" value="com.batch.dao.mapper.MyMapper.updateByExampleSelective" />
 	</bean>
 
-	<!-- 自定义Reader -->
-	<bean id="myItemReader" class="com.hsjry.cc.batch.spring.reader.MyItemReader" scope="step"/>
-
-	<!-- 自定义Writer -->
-	<bean id="myItemWriter" class="com.hsjry.cc.batch.spring.writer.MyItemWriter" scope="step"/>
-
-    <!-- 任务 -->
-    <batch:job id="taskJob" restartable="true" job-repository="jobRepository">
-		<!--<batch:split id="split1" task-executor="taskExecutor">-->
-		<batch:split id="split1">
-			<batch:flow>
-				<!-- 第1步 -->
-				<batch:step id="step" next="step2">
-					<batch:tasklet transaction-manager="resourcelessTransactionManager">
-						<batch:chunk reader="myItemReader" writer="myItemWriter" commit-interval="1"/>
-					</batch:tasklet>
-				</batch:step>
-				<!-- 第2步 -->
-				<batch:step id="step2">
-					<batch:tasklet transaction-manager="resourcelessTransactionManager">
-						<batch:chunk reader="itemReader" processor="myItemProcessor" writer="itemWriter" commit-interval="20" retry-limit="3" skip-limit="3">
-							<batch:retryable-exception-classes>
-								<batch:include class="java.lang.NullPointerException"/>
-							</batch:retryable-exception-classes>
-							<batch:skippable-exception-classes>
-								<batch:include class="java.lang.NullPointerException"/>
-							</batch:skippable-exception-classes>
-						</batch:chunk>
-					</batch:tasklet>
-					<batch:listeners>
-						<batch:listener ref="myStepExecutionListener"/>
-					</batch:listeners>
-				</batch:step>
-			</batch:flow>
-
-			<batch:flow>
-				<!-- 第3步 -->
-				<batch:step id="step3" >
-					<batch:tasklet ref="tasklet3" transaction-manager="resourcelessTransactionManager"/>
-				</batch:step>
-			</batch:flow>
-
+    <!-- 批次任务 -->
+	<batch:job id="taskJob" restartable="true" job-repository="jobRepository">
+		<!-- 第1步 -->
+		<batch:step id="step" next="step2">
+			<batch:tasklet ref="tasklet1" transaction-manager="resourcelessTransactionManager"/>
+		</batch:step>
+		<!-- 第2步 -->
+		<batch:step id="step2" next="step3">
+			<batch:tasklet transaction-manager="resourcelessTransactionManager"> <!--task-executor="taskExecutor" throttle-limit="50"-->
+				<batch:chunk reader="itemReader" processor="myItemProcessor" writer="itemWriter" commit-interval="20" retry-limit="3" skip-limit="2">
+					<batch:retryable-exception-classes>
+						<batch:include class="java.lang.NullPointerException"/>
+					</batch:retryable-exception-classes>
+					<batch:skippable-exception-classes>
+						<batch:include class="java.lang.NullPointerException"/>
+					</batch:skippable-exception-classes>
+				</batch:chunk>
+			</batch:tasklet>
+			<batch:listeners>
+				<batch:listener ref="myStepExecutionListener"/>
+			</batch:listeners>
+		</batch:step>
+		<!-- 第3步 -->
+		<batch:step id="step3" >
+			<batch:tasklet ref="tasklet3" transaction-manager="resourcelessTransactionManager"/>
 			<batch:next on="COMPLETED" to="step4" />
 			<batch:next on="FAILED" to="step4" />
-		</batch:split>
-
+		</batch:step>
 		<!-- 第4步 -->
 		<batch:step id="step4">
 			<batch:tasklet ref="tasklet4"  transaction-manager="resourcelessTransactionManager"/>
 		</batch:step>
-    </batch:job>
+	</batch:job>
 
 	<bean class="com.wandaph.tt.executor.handler.impl.BatchServiceHandler">
 		<property name="jobRegistry" ref="jobRegistry" />

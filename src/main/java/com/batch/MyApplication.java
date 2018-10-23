@@ -1,4 +1,4 @@
-package com.hsjry.cc.batch.spring;
+package com.batch;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -9,8 +9,8 @@ import org.springframework.context.annotation.ImportResource;
 @SpringBootApplication
 @ImportResource(locations= {"classpath:application-bean.xml"})
 @EnableAutoConfiguration(exclude = BatchAutoConfiguration.class)
-public class HsjryCcBatchSpringApplication {
+public class MyApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(HsjryCcBatchSpringApplication.class, args);
+		SpringApplication.run(MyApplication.class, args);
 	}
 }

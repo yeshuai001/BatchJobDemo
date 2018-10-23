@@ -5,6 +5,6 @@
 
     <import resource="spring/spring-datasource.xml" />
     <import resource="spring/spring-batch.xml" />
-    <import resource="spring/spring-elasticjob.xml" />
+    <import resource="spring/spring-tt.xml" />
 
 </beans>

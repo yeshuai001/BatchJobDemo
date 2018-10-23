@@ -1,8 +1,8 @@
-package com.hsjry.cc.batch.spring.dao.model;
+package com.batch.dao.model;
 
 import java.util.Date;
 
-public class PublicCcSmsSign {
+public class MyModel {
 
     /** 任务编号 */
     private String jobId;

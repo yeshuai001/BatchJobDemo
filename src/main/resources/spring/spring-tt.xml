@@ -11,14 +11,11 @@
                         http://www.dangdang.com/schema/ddframe/job/job.xsd
                         ">
     <!--配置作业注册中心 -->
-    <reg:zookeeper id="regCenter" server-lists="10.53.156.239:2181" namespace="elastic-job-demo" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+    <reg:zookeeper id="regCenter" server-lists="10.53.156.239:2181" namespace="my-job-namespace"
+                   base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
 
-    <!-- 配置作业-->
-    <job:simple id="myElasticJob" class="com.hsjry.cc.batch.spring.job.MyElasticJob" registry-center-ref="regCenter" cron="0/30 * * * * ?"
+    <!-- 配置批次作业-->
+    <job:simple id="myBatchJob" class="com.batch.job.MyJob" registry-center-ref="regCenter" cron="0/30 * * * * ?"
                 sharding-total-count="1" event-trace-rdb-data-source="dataSource" batch-job-ref="taskJob" jobLauncher-ref="jobLauncher"/>
-
-    <!-- 配置作业-->
-    <job:simple id="myElasticJob2" class="com.hsjry.cc.batch.spring.job.MyElasticJob2" registry-center-ref="regCenter" cron="0/30 * * * * ?"
-                sharding-total-count="1" event-trace-rdb-data-source="dataSource"/>
 </beans>
 
