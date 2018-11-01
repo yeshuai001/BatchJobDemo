@@ -15,6 +15,6 @@
                    base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
 
     <!-- 配置批次作业-->
-    <job:simple id="myBatchJob" class="com.batch.job.MyJob" registry-center-ref="regCenter" cron="0/30 * * * * ?"
+    <job:simple id="myBatchJob" module-name="CC" class="com.batch.job.MyJob" registry-center-ref="regCenter" cron="0/30 * * * * ?"
                 sharding-total-count="1" event-trace-rdb-data-source="dataSource" batch-job-ref="taskJob" jobLauncher-ref="jobLauncher"/>
 </beans>
